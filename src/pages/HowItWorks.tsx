@@ -6,13 +6,26 @@ import { Button } from "@/components/ui/button";
 import { Shield, UserCheck, Sparkles } from "lucide-react";
 import { AccountPromptModal } from "@/components/AccountPromptModal";
 import { PoreCloggingChecker } from "@/components/PoreCloggingChecker";
+import {
+  poreCloggingIngredients,
+  poreCloggingCombinations,
+  cautionIngredients,
+} from "@/data/poreCloggingIngredients";
 
+// Group the full pore-clogging list by first letter for display
 const comedogenicIngredients = [
-  { letter: "A", items: ["Acetylated Lanolin", "Acetylated Lanolin Alcohol", "Active Soil Complex", "Ahnfeltia Concinna", "Alaria Esculenta", "Algae Extract", "Algin", "Argan Oil", "Argania Spinosa", "Ascophyllum Nodosum", "Avocado Oil"] },
-  { letter: "B", items: ["Bismuth Oxychloride", "Black Kelp", "Bladderwack", "Blue Algae", "Blue Green Algae", "Brown Algae", "Butyl Stearate"] },
-  { letter: "C", items: ["Carrageenan", "Carrageenan Moss", "Cetyl Acetate", "Cetearyl Alcohol & Ceteareth 20", "Chlorella", "Chondrus Crispus", "Coal Tar", "Cocoa Butter", "Coconut Alkanes", "Coconut Butter", "Cocos Nucifera (Coconut) Oil", "Colloidal Sulfur", "Corallina Officinalis", "Cotton Awws", "Cotton Seed Oil", "Crithmum Maritimum"] },
-  { letter: "D-G", items: ["D&C Red #3, #17, #21, #30, #36", "Dilsea Carnosa", "Dioctyl Succinate", "Dulse", "Ecklonia", "Enteromorpha Compressa", "Ethoxylated Lanolin", "Ethylhexyl Palmitate", "Evening Primrose Oil", "Fucus Vesiculosus", "Glyceryl Stearate SE", "Glyceryl 3-Diisostearate", "Grapeseed Oil"] },
-];
+  ...poreCloggingIngredients.map((i) => i.name),
+  ...poreCloggingCombinations.map((c) => c.name),
+]
+  .sort((a, b) => a.localeCompare(b))
+  .reduce<{ letter: string; items: string[] }[]>((groups, name) => {
+    const letter = name[0].toUpperCase();
+    const group = groups.find((g) => g.letter === letter);
+    if (group) group.items.push(name);
+    else groups.push({ letter, items: [name] });
+    return groups;
+  }, []);
+const comedogenicCount = poreCloggingIngredients.length + poreCloggingCombinations.length;
 
 const HowItWorks = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,13 +134,13 @@ const HowItWorks = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Comedogenic Ingredients We Screen For</CardTitle>
               <p className="text-sm text-muted-foreground">
-                These are some of the pore-clogging ingredients we automatically filter out
+                The {comedogenicCount} pore-clogging ingredients we screen for (updated 1/1/23)
               </p>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="columns-2 md:columns-4 gap-6">
                 {comedogenicIngredients.map((section) => (
-                  <div key={section.letter}>
+                  <div key={section.letter} className="break-inside-avoid mb-6">
                     <h3 className="font-bold text-lg mb-2 text-primary">{section.letter}</h3>
                     <ul className="space-y-1 text-sm text-muted-foreground">
                       {section.items.map((item) => (
@@ -137,8 +150,10 @@ const HowItWorks = () => {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground mt-4 italic">
-                ...and many more. Our complete list is continuously updated based on the latest research.
+              <p className="text-xs text-muted-foreground mt-2 italic">
+                Also use with caution: {cautionIngredients.map((i) => i.name).join(", ")}.
+                These are mildly comedogenic and can be a problem when formulated with other pore-clogging
+                ingredients.
               </p>
             </CardContent>
           </Card>
