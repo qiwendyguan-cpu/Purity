@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, UserCheck, Sparkles } from "lucide-react";
 import { AccountPromptModal } from "@/components/AccountPromptModal";
+import { PoreCloggingChecker } from "@/components/PoreCloggingChecker";
 
 const comedogenicIngredients = [
   { letter: "A", items: ["Acetylated Lanolin", "Acetylated Lanolin Alcohol", "Active Soil Complex", "Ahnfeltia Concinna", "Alaria Esculenta", "Algae Extract", "Algin", "Argan Oil", "Argania Spinosa", "Ascophyllum Nodosum", "Avocado Oil"] },
@@ -98,6 +99,9 @@ const HowItWorks = () => {
               </p>
             </CardContent>
           </Card>
+
+          {/* Pore-Clogging Ingredients Checker */}
+          <PoreCloggingChecker />
 
           {/* Continue CTA Section */}
           <Card className="bg-gradient-to-br from-sage/30 via-cream to-warm-beige/30 border-primary/30 shadow-lg">
