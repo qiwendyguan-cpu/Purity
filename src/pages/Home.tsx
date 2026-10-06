@@ -28,6 +28,7 @@ const products = [
     price: "A$27.99",
     image: "/products/sunscreen-cetaphil-ultralight.jpg",
     badge: sunscreenBadge,
+    linkToShop: true,
     externalUrl: "https://terrywhitechemmart.com.au/shop/product/cetaphil-sun-ultra-light-lotion-spf50-100ml",
     retailer: "TerryWhite (AU)"
   },
@@ -39,6 +40,7 @@ const products = [
     price: "$46.99",
     image: "/products/sunscreen-neutrogena-sheer-zinc-face.jpg",
     badge: sunscreenBadge,
+    linkToShop: true,
     externalUrl: "https://www.amazon.com/dp/B01MDOA0V4",
     retailer: "Amazon"
   },
@@ -50,6 +52,7 @@ const products = [
     price: "€8.29",
     image: "/products/sunscreen-uriage-bariesun-ultralight.png",
     badge: sunscreenBadge,
+    linkToShop: true,
     externalUrl: "https://www.redcare-pharmacie.fr/beaute/BE04581237/uriage-bariesun-fluide-ultra-leger-spf50.htm",
     retailer: "Redcare (FR)"
   },
@@ -61,6 +64,7 @@ const products = [
     price: "£23.50",
     image: "/products/sunscreen-uriage-bariesun-mat.png",
     badge: sunscreenBadge,
+    linkToShop: true,
     externalUrl: "https://www.superdrug.com/skin/sun-care/expert-sensitive-suncare/uriage-bariesun-matifying-fluid-spf50-50ml/p/mp-00123030",
     retailer: "Superdrug (UK)"
   },
@@ -72,6 +76,7 @@ const products = [
     price: "€24.21",
     image: "/products/sunscreen-isdin-fusion-gel-sport.jpg",
     badge: sunscreenBadge,
+    linkToShop: true,
     externalUrl: "https://www.medikamente-per-klick.de/isdin-fotoprotector-fusion-gel-sport-spf-50-100ml-16951364",
     retailer: "Medikamente per Klick (DE)"
   },
@@ -83,6 +88,7 @@ const products = [
     price: "£9.20",
     image: "/products/sunscreen-nivea-protect-refresh.png",
     badge: sunscreenBadge,
+    linkToShop: true,
     externalUrl: "https://groceries.morrisons.com/products/nivea-sun-protect-dry-touch-sun-cream-mist-spf-50-200ml/112324149",
     retailer: "Morrisons (UK)"
   },

@@ -43,6 +43,8 @@ interface ProductCardProps {
   badge?: string;
   externalUrl?: string;
   retailer?: string;
+  /** Card image and title open the shop link instead of the Purity product page */
+  linkToShop?: boolean;
   isFavorite?: boolean;
 }
 
@@ -89,15 +91,24 @@ export const ProductCard = ({
   image,
   externalUrl,
   retailer = "Target",
+  linkToShop,
   isFavorite
 }: ProductCardProps) => {
   // Images starting with "/" are real product photos in public/; fit them instead of cropping
   const isPhoto = image?.startsWith("/");
   const productImage = isPhoto ? image : image ? imageMap[image] : cleanserImg;
+  const opensShop = linkToShop && externalUrl;
+
+  const CardLink = ({ children }: { children: React.ReactNode }) =>
+    opensShop ? (
+      <a href={externalUrl} target="_blank" rel="noopener noreferrer">{children}</a>
+    ) : (
+      <Link to={`/product/${id}`}>{children}</Link>
+    );
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <Link to={`/product/${id}`}>
+      <CardLink>
         <div className={`aspect-square flex items-center justify-center relative overflow-hidden ${isPhoto ? "bg-white" : "bg-muted"}`}>
           <img
             src={productImage}
@@ -145,7 +156,7 @@ export const ProductCard = ({
             )}
           </div>
         </CardContent>
-      </Link>
+      </CardLink>
       <CardFooter className="p-4 pt-0">
         {externalUrl ? (
           <Button className="w-full" size="sm" asChild>
