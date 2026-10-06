@@ -5,7 +5,7 @@ import {
   poreCloggingCombinations,
   cautionIngredients,
   type PoreCloggingIngredient,
-} from "../data/poreCloggingIngredients";
+} from "../data/poreCloggingIngredients.js";
 
 // Lowercase, drop "#"/"No." before numbers, and turn punctuation into spaces so
 // "PEG-8 Stearate", "D&C Red No. 30" and "d&c red #30" compare equal.

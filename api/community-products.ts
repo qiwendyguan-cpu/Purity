@@ -1,6 +1,6 @@
 // GET /api/community-products — products added through the link checker, newest first
 
-import { listProducts, storeConfigured } from "./_lib/store";
+import { listProducts, storeConfigured } from "./_lib/store.js";
 
 export async function GET() {
   const products = storeConfigured() ? await listProducts().catch(() => []) : [];

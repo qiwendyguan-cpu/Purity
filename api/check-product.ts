@@ -3,9 +3,9 @@
 // pore-clogging list, and publishes passing in-stock products to the home page.
 
 import { createHash } from "node:crypto";
-import { checkIngredients, type CheckResult } from "../src/lib/ingredientCheck";
-import { extractProduct, type ExtractedProduct } from "./_lib/extractProduct";
-import { fetchPublicPage, FetchError } from "./_lib/safeFetch";
+import { checkIngredients, type CheckResult } from "../src/lib/ingredientCheck.js";
+import { extractProduct, type ExtractedProduct } from "./_lib/extractProduct.js";
+import { fetchPublicPage, FetchError } from "./_lib/safeFetch.js";
 import {
   hasProduct,
   productCount,
@@ -14,7 +14,7 @@ import {
   withinRateLimit,
   MAX_PRODUCTS,
   type CommunityProduct,
-} from "./_lib/store";
+} from "./_lib/store.js";
 
 type Status = "invalid" | "blocked" | "unreachable" | "no_ingredients" | "pore_clogging" | "passed" | "rate_limited";
 
