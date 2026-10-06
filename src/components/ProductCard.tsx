@@ -94,8 +94,8 @@ export const ProductCard = ({
   linkToShop,
   isFavorite
 }: ProductCardProps) => {
-  // Images starting with "/" are real product photos in public/; fit them instead of cropping
-  const isPhoto = image?.startsWith("/");
+  // Real product photos (in public/ or remote URLs) are fitted instead of cropped
+  const isPhoto = image?.startsWith("/") || image?.startsWith("https://");
   const productImage = isPhoto ? image : image ? imageMap[image] : cleanserImg;
   const opensShop = linkToShop && externalUrl;
 

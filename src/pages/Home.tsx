@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
@@ -265,13 +265,24 @@ const PAGE_SIZE = 15;
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [communityProducts, setCommunityProducts] = useState<typeof products>([]);
+
+  // Products added through the How It Works link checker, shown first (newest first)
+  useEffect(() => {
+    fetch("/api/community-products")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => Array.isArray(data) && setCommunityProducts(data))
+      .catch(() => {});
+  }, []);
+
+  const allProducts = [...communityProducts, ...products];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
   };
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = allProducts.filter((product) => {
     if (!searchQuery.trim()) return true;
     
     const query = searchQuery.toLowerCase();
