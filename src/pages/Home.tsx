@@ -36,50 +36,55 @@ const products = [
     name: "Neutrogena Sheer Zinc Face Dry-Touch Sunscreen SPF 50",
     brand: "Neutrogena",
     category: "sunscreen",
+    price: "$46.99",
     image: "/products/sunscreen-neutrogena-sheer-zinc-face.jpg",
     badge: sunscreenBadge,
-    externalUrl: "https://www.walmart.com/ip/5-pack-Neutrogena-Sheer-Zinc-Dry-Touch-Face-SPF-50-Sunscreen-Lotion-2-fl-oz/9516814272",
-    retailer: "Walmart"
+    externalUrl: "https://www.amazon.com/dp/B01MDOA0V4",
+    retailer: "Amazon"
   },
   {
     id: "15",
     name: "Bariésun Ultra-Light Fluid SPF50+",
     brand: "Uriage",
     category: "sunscreen",
+    price: "€8.29",
     image: "/products/sunscreen-uriage-bariesun-ultralight.png",
     badge: sunscreenBadge,
-    externalUrl: "https://www.uriage.com/AA/en/products/bariesun-ultra-light-fluid-spf50+-1",
-    retailer: "Uriage"
+    externalUrl: "https://www.redcare-pharmacie.fr/beaute/BE04581237/uriage-bariesun-fluide-ultra-leger-spf50.htm",
+    retailer: "Redcare (FR)"
   },
   {
     id: "16",
     name: "Bariésun Matifying Fluid SPF50+",
     brand: "Uriage",
     category: "sunscreen",
+    price: "£23.50",
     image: "/products/sunscreen-uriage-bariesun-mat.png",
     badge: sunscreenBadge,
-    externalUrl: "https://www.uriage.com/AA/en/products/bariesun-matifying-fluid-spf50+",
-    retailer: "Uriage"
+    externalUrl: "https://www.superdrug.com/skin/sun-care/expert-sensitive-suncare/uriage-bariesun-matifying-fluid-spf50-50ml/p/mp-00123030",
+    retailer: "Superdrug (UK)"
   },
   {
     id: "17",
     name: "Fotoprotector Fusion Gel Sport SPF 50",
     brand: "ISDIN",
     category: "sunscreen",
+    price: "€24.21",
     image: "/products/sunscreen-isdin-fusion-gel-sport.jpg",
     badge: sunscreenBadge,
-    externalUrl: "https://www.isdin.com/en-GB/product/fotoprotector-isdin/fusion-gel-sport-spf-50",
-    retailer: "ISDIN (UK)"
+    externalUrl: "https://www.medikamente-per-klick.de/isdin-fotoprotector-fusion-gel-sport-spf-50-100ml-16951364",
+    retailer: "Medikamente per Klick (DE)"
   },
   {
     id: "18",
     name: "Nivea Sun Protect & Refresh Cooling Sun Mist SPF50",
     brand: "Nivea",
     category: "sunscreen",
+    price: "£9.20",
     image: "/products/sunscreen-nivea-protect-refresh.png",
     badge: sunscreenBadge,
-    externalUrl: "https://www.nivea.co.uk/products/protect-and-dry-touch-refreshing-mist-spf-50-40059006958710045.html",
-    retailer: "Nivea (UK)"
+    externalUrl: "https://groceries.morrisons.com/products/nivea-sun-protect-dry-touch-sun-cream-mist-spf-50-200ml/112324149",
+    retailer: "Morrisons (UK)"
   },
   {
     id: "1",
