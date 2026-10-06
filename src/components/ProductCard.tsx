@@ -34,7 +34,7 @@ interface ProductCardProps {
   id: string;
   name: string;
   brand: string;
-  price: string;
+  price?: string;
   originalPrice?: string;
   discount?: string;
   rating?: number;
@@ -42,6 +42,7 @@ interface ProductCardProps {
   image?: string;
   badge?: string;
   externalUrl?: string;
+  retailer?: string;
   isFavorite?: boolean;
 }
 
@@ -87,19 +88,27 @@ export const ProductCard = ({
   badge,
   image,
   externalUrl,
+  retailer = "Target",
   isFavorite
 }: ProductCardProps) => {
-  const productImage = image ? imageMap[image] : cleanserImg;
-  
+  // Images starting with "/" are real product photos in public/; fit them instead of cropping
+  const isPhoto = image?.startsWith("/");
+  const productImage = isPhoto ? image : image ? imageMap[image] : cleanserImg;
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <Link to={`/product/${id}`}>
-        <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
-          <img 
-            src={productImage} 
+        <div className={`aspect-square flex items-center justify-center relative overflow-hidden ${isPhoto ? "bg-white" : "bg-muted"}`}>
+          <img
+            src={productImage}
             alt={name}
-            className="w-full h-full object-cover"
+            className={isPhoto ? "w-full h-full object-contain p-6" : "w-full h-full object-cover"}
           />
+          {badge && (
+            <span className="absolute top-2 left-2 rounded-full bg-background/90 backdrop-blur-sm px-2 py-1 text-[11px] font-medium">
+              {badge}
+            </span>
+          )}
           <button 
             className="absolute top-2 right-2 p-2 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background transition-colors"
             onClick={(e) => {
@@ -127,7 +136,7 @@ export const ProductCard = ({
           )}
           
           <div className="flex items-baseline gap-2">
-            <span className="font-bold text-lg">{price}</span>
+            {price && <span className="font-bold text-lg">{price}</span>}
             {originalPrice && (
               <span className="text-sm text-muted-foreground line-through">{originalPrice}</span>
             )}
@@ -141,7 +150,7 @@ export const ProductCard = ({
         {externalUrl ? (
           <Button className="w-full" size="sm" asChild>
             <a href={externalUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-              View on Target
+              View on {retailer}
               <ExternalLink className="h-3 w-3" />
             </a>
           </Button>

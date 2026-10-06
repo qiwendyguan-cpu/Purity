@@ -15,7 +15,72 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
 
+// Acne-safe sunscreens for prolonged sun exposure (beach/hike/park/body), not everyday use.
+// Source: docs/reference/acne-safe-reference.md. Links and prices checked 2026-10-05.
+const sunscreenBadge = "For prolonged sun";
+
 const products = [
+  {
+    id: "13",
+    name: "Cetaphil Sun Ultra Light Lotion SPF50+",
+    brand: "Cetaphil",
+    category: "sunscreen",
+    price: "A$27.99",
+    image: "/products/sunscreen-cetaphil-ultralight.jpg",
+    badge: sunscreenBadge,
+    externalUrl: "https://terrywhitechemmart.com.au/shop/product/cetaphil-sun-ultra-light-lotion-spf50-100ml",
+    retailer: "TerryWhite (AU)"
+  },
+  {
+    id: "14",
+    name: "Neutrogena Sheer Zinc Face Dry-Touch Sunscreen SPF 50",
+    brand: "Neutrogena",
+    category: "sunscreen",
+    image: "/products/sunscreen-neutrogena-sheer-zinc-face.jpg",
+    badge: sunscreenBadge,
+    externalUrl: "https://www.walmart.com/ip/5-pack-Neutrogena-Sheer-Zinc-Dry-Touch-Face-SPF-50-Sunscreen-Lotion-2-fl-oz/9516814272",
+    retailer: "Walmart"
+  },
+  {
+    id: "15",
+    name: "Bariésun Ultra-Light Fluid SPF50+",
+    brand: "Uriage",
+    category: "sunscreen",
+    image: "/products/sunscreen-uriage-bariesun-ultralight.png",
+    badge: sunscreenBadge,
+    externalUrl: "https://www.uriage.com/AA/en/products/bariesun-ultra-light-fluid-spf50+-1",
+    retailer: "Uriage"
+  },
+  {
+    id: "16",
+    name: "Bariésun Matifying Fluid SPF50+",
+    brand: "Uriage",
+    category: "sunscreen",
+    image: "/products/sunscreen-uriage-bariesun-mat.png",
+    badge: sunscreenBadge,
+    externalUrl: "https://www.uriage.com/AA/en/products/bariesun-matifying-fluid-spf50+",
+    retailer: "Uriage"
+  },
+  {
+    id: "17",
+    name: "Fotoprotector Fusion Gel Sport SPF 50",
+    brand: "ISDIN",
+    category: "sunscreen",
+    image: "/products/sunscreen-isdin-fusion-gel-sport.jpg",
+    badge: sunscreenBadge,
+    externalUrl: "https://www.isdin.com/en-GB/product/fotoprotector-isdin/fusion-gel-sport-spf-50",
+    retailer: "ISDIN (UK)"
+  },
+  {
+    id: "18",
+    name: "Nivea Sun Protect & Refresh Cooling Sun Mist SPF50",
+    brand: "Nivea",
+    category: "sunscreen",
+    image: "/products/sunscreen-nivea-protect-refresh.png",
+    badge: sunscreenBadge,
+    externalUrl: "https://www.nivea.co.uk/products/protect-and-dry-touch-refreshing-mist-spf-50-40059006958710045.html",
+    retailer: "Nivea (UK)"
+  },
   {
     id: "1",
     name: "Cetaphil Gentle Skin Cleanser",
