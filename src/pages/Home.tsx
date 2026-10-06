@@ -260,8 +260,16 @@ const products = [
   },
 ];
 
+const PAGE_SIZE = 15;
+
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
 
   const filteredProducts = products.filter((product) => {
     if (!searchQuery.trim()) return true;
@@ -274,9 +282,18 @@ const Home = () => {
     );
   });
 
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageProducts = filteredProducts.slice(pageStart, pageStart + PAGE_SIZE);
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header onSearch={setSearchQuery} />
+      <Header onSearch={handleSearch} />
       
       {/* Hero Banner */}
       <div className="relative h-48 overflow-hidden">
@@ -321,7 +338,9 @@ const Home = () => {
             {/* Toolbar */}
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-muted-foreground">
-                Showing {filteredProducts.length} of {products.length} results
+                {filteredProducts.length > 0
+                  ? `Showing ${pageStart + 1}–${pageStart + pageProducts.length} of ${filteredProducts.length} results`
+                  : "Showing 0 results"}
               </p>
               
               <div className="flex items-center gap-4">
@@ -346,7 +365,7 @@ const Home = () => {
             {/* Product Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
+                pageProducts.map((product) => (
                   <ProductCard key={product.id} {...product} />
                 ))
               ) : (
@@ -360,19 +379,39 @@ const Home = () => {
             </div>
             
             {/* Pagination */}
-            <div className="flex items-center justify-center gap-2">
-              <Button variant="outline" size="icon" disabled>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="default" size="sm">1</Button>
-              <Button variant="outline" size="sm">2</Button>
-              <Button variant="outline" size="sm">3</Button>
-              <Button variant="outline" size="sm">...</Button>
-              <Button variant="outline" size="sm">13</Button>
-              <Button variant="outline" size="icon">
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={currentPage === 1}
+                  onClick={() => goToPage(currentPage - 1)}
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <Button
+                    key={page}
+                    variant={page === currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => goToPage(page)}
+                    aria-current={page === currentPage ? "page" : undefined}
+                  >
+                    {page}
+                  </Button>
+                ))}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={currentPage === totalPages}
+                  onClick={() => goToPage(currentPage + 1)}
+                  aria-label="Next page"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </main>
