@@ -45,18 +45,6 @@ const products = [
     retailer: "Amazon"
   },
   {
-    id: "15",
-    name: "Bariésun Ultra-Light Fluid SPF50+",
-    brand: "Uriage",
-    category: "sunscreen",
-    price: "€8.29",
-    image: "/products/sunscreen-uriage-bariesun-ultralight.png",
-    badge: sunscreenBadge,
-    linkToShop: true,
-    externalUrl: "https://www.redcare-pharmacie.fr/beaute/BE04581237/uriage-bariesun-fluide-ultra-leger-spf50.htm",
-    retailer: "Redcare (FR)"
-  },
-  {
     id: "16",
     name: "Bariésun Matifying Fluid SPF50+",
     brand: "Uriage",
