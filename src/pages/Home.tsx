@@ -92,6 +92,51 @@ const products = [
     externalUrl: "https://groceries.morrisons.com/products/nivea-sun-protect-dry-touch-sun-cream-mist-spf-50-200ml/112324149",
     retailer: "Morrisons (UK)"
   },
+  // Acne-safe body washes. Links and prices checked 2026-10-06.
+  {
+    id: "19",
+    name: "Thankyou Botanical Body Wash Mint & Spring Flowers 1L",
+    brand: "Thankyou",
+    category: "body wash",
+    price: "A$8.95",
+    image: "/products/bodywash-thankyou-mint.jpg",
+    linkToShop: true,
+    externalUrl: "https://www.woolworths.com.au/shop/productdetails/307002",
+    retailer: "Woolworths (AU)"
+  },
+  {
+    id: "20",
+    name: "Thankyou Botanical Body Wash Geranium, Rose & Wood 1L",
+    brand: "Thankyou",
+    category: "body wash",
+    price: "A$8.95",
+    image: "/products/bodywash-thankyou-geranium.jpg",
+    linkToShop: true,
+    externalUrl: "https://www.woolworths.com.au/shop/productdetails/306679",
+    retailer: "Woolworths (AU)"
+  },
+  {
+    id: "21",
+    name: "Trader Joe's Tea Tree Tingle Body Wash (2-pack)",
+    brand: "Trader Joe's",
+    category: "body wash",
+    price: "$28.40",
+    image: "/products/bodywash-tj-tea-tree-tingle.jpg",
+    linkToShop: true,
+    externalUrl: "https://www.amazon.com/dp/B0HFSNQZW8",
+    retailer: "Amazon"
+  },
+  {
+    id: "22",
+    name: "Palmolive Men Active Body Wash with Sea Minerals 1L",
+    brand: "Palmolive",
+    category: "body wash",
+    price: "A$10.99",
+    image: "/products/bodywash-palmolive-men-active.jpg",
+    linkToShop: true,
+    externalUrl: "https://www.chemistwarehouse.com.au/buy/75852/palmolive-men-body-wash-active-with-sea-minerals-shower-gel-1l",
+    retailer: "Chemist Warehouse (AU)"
+  },
   {
     id: "1",
     name: "Cetaphil Gentle Skin Cleanser",
