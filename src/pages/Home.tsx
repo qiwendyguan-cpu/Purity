@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
+import { PRICE_RANGES, parsePrice } from "@/lib/priceRanges";
+
+const titleCase = (s: string) => s.replace(/\b\w/g, (c) => c.toUpperCase());
+
+const toggleValue = (list: string[], value: string) =>
+  list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 
 // Acne-safe sunscreens for prolonged sun exposure (beach/hike/park/body), not everyday use.
 // Source: docs/reference/acne-safe-reference.md. Links and prices checked 2026-10-05.
@@ -173,6 +179,9 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [communityProducts, setCommunityProducts] = useState<typeof products>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
 
   // Products added through the How It Works link checker, shown first (newest first)
   useEffect(() => {
@@ -184,21 +193,77 @@ const Home = () => {
 
   const allProducts = [...communityProducts, ...products];
 
+  const availableCategories = Array.from(new Set(allProducts.map((p) => p.category).filter(Boolean))).sort();
+  const availableBrands = Array.from(new Set(allProducts.map((p) => p.brand).filter(Boolean))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
   };
 
+  const toggleCategory = (category: string) => {
+    setSelectedCategories((prev) => toggleValue(prev, category));
+    setCurrentPage(1);
+  };
+  const toggleBrand = (brand: string) => {
+    setSelectedBrands((prev) => toggleValue(prev, brand));
+    setCurrentPage(1);
+  };
+  const togglePriceRange = (rangeId: string) => {
+    setSelectedPriceRanges((prev) => toggleValue(prev, rangeId));
+    setCurrentPage(1);
+  };
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedBrands([]);
+    setSelectedPriceRanges([]);
+    setCurrentPage(1);
+  };
+
   const filteredProducts = allProducts.filter((product) => {
-    if (!searchQuery.trim()) return true;
-    
-    const query = searchQuery.toLowerCase();
-    return (
-      product.name.toLowerCase().includes(query) ||
-      product.brand.toLowerCase().includes(query) ||
-      product.category.toLowerCase().includes(query)
-    );
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const matchesSearch =
+        product.name.toLowerCase().includes(query) ||
+        product.brand.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query);
+      if (!matchesSearch) return false;
+    }
+
+    if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) return false;
+    if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) return false;
+
+    if (selectedPriceRanges.length > 0) {
+      const value = parsePrice(product.price);
+      if (value === undefined) return false;
+      const inSelectedRange = PRICE_RANGES.some(
+        (range) => selectedPriceRanges.includes(range.id) && range.test(value),
+      );
+      if (!inSelectedRange) return false;
+    }
+
+    return true;
   });
+
+  const activeFilters = [
+    ...selectedCategories.map((category) => ({
+      key: `category:${category}`,
+      label: titleCase(category),
+      onRemove: () => toggleCategory(category),
+    })),
+    ...selectedBrands.map((brand) => ({
+      key: `brand:${brand}`,
+      label: brand,
+      onRemove: () => toggleBrand(brand),
+    })),
+    ...selectedPriceRanges.map((rangeId) => ({
+      key: `price:${rangeId}`,
+      label: PRICE_RANGES.find((r) => r.id === rangeId)?.label ?? rangeId,
+      onRemove: () => togglePriceRange(rangeId),
+    })),
+  ];
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   const pageStart = (currentPage - 1) * PAGE_SIZE;
@@ -232,27 +297,39 @@ const Home = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
           {/* Sidebar */}
           <aside className="hidden lg:block">
-            <FilterSidebar />
+            <FilterSidebar
+              categories={availableCategories}
+              brands={availableBrands}
+              selectedCategories={selectedCategories}
+              selectedBrands={selectedBrands}
+              selectedPriceRanges={selectedPriceRanges}
+              onToggleCategory={toggleCategory}
+              onToggleBrand={toggleBrand}
+              onTogglePriceRange={togglePriceRange}
+              onClearAll={clearFilters}
+            />
           </aside>
-          
+
           {/* Main Content */}
           <div>
             {/* Active Filters */}
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <Badge variant="secondary" className="gap-2">
-                Cleanser
-                <button className="ml-1 hover:text-destructive">×</button>
-              </Badge>
-              <Badge variant="secondary" className="gap-2">
-                Toner
-                <button className="ml-1 hover:text-destructive">×</button>
-              </Badge>
-              <Badge variant="secondary" className="gap-2">
-                Serum
-                <button className="ml-1 hover:text-destructive">×</button>
-              </Badge>
-            </div>
-            
+            {activeFilters.length > 0 && (
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                {activeFilters.map((filter) => (
+                  <Badge key={filter.key} variant="secondary" className="gap-2">
+                    {filter.label}
+                    <button
+                      className="ml-1 hover:text-destructive"
+                      onClick={filter.onRemove}
+                      aria-label={`Remove ${filter.label} filter`}
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+
             {/* Toolbar */}
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-muted-foreground">
