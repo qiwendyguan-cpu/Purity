@@ -4,6 +4,7 @@
 // `publish_product` itself dedupes on the unique `canonical_url` column.
 
 import { createClient } from "@supabase/supabase-js";
+import { sanitizeBrand } from "./sanitizeBrand.js";
 
 export interface CommunityProduct {
   id: string;
@@ -55,10 +56,13 @@ const PRODUCT_COLUMNS = "id, name, brand, category, price_text, image, image_url
 // maps it back to "no price" so the card just renders without one.
 const UNKNOWN_PRICE = "0.00";
 
+// Also re-checked here (not just on write) so a row published before this
+// check existed - or before a particular retailer's page got cleaner data -
+// still displays a sane brand without needing a database write.
 const toCommunityProduct = (row: ProductRow): CommunityProduct => ({
   id: row.id,
   name: row.name,
-  brand: row.brand ?? "",
+  brand: sanitizeBrand(row.brand, row.retailer) ?? row.brand ?? "",
   category: row.category ?? "other",
   price: row.price_text && row.price_text !== UNKNOWN_PRICE ? row.price_text : undefined,
   image: row.image ?? row.image_url ?? "/placeholder.svg",

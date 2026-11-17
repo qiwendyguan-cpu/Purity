@@ -7,6 +7,7 @@ import { extractProduct, type ExtractedProduct } from "./_lib/extractProduct.js"
 import { fetchPublicPage, FetchError } from "./_lib/safeFetch.js";
 import { canonicalUrl } from "./_lib/canonicalUrl.js";
 import { guessCategory } from "./_lib/categorize.js";
+import { sanitizeBrand } from "./_lib/sanitizeBrand.js";
 import { hasProduct, productCount, saveProduct, storeConfigured, withinRateLimit, MAX_PRODUCTS } from "./_lib/store.js";
 
 type Status = "invalid" | "blocked" | "unreachable" | "no_ingredients" | "pore_clogging" | "passed" | "rate_limited";
@@ -87,7 +88,8 @@ export async function POST(request: Request) {
   const imageUrl = extracted.image ? new URL(extracted.image, page.finalUrl).toString().replace(/^http:\/\//, "https://") : undefined;
   const image = imageUrl && !/no-image|placeholder|\.gif(\?|$)/i.test(imageUrl) ? imageUrl : undefined;
   const price = formatPrice(extracted.price, extracted.currency);
-  const productInfo = { name, brand: extracted.brand, image, price, retailer, url: page.finalUrl };
+  const brand = sanitizeBrand(extracted.brand, retailer);
+  const productInfo = { name, brand, image, price, retailer, url: page.finalUrl };
 
   // publish_product() only strips a literal "$" before parsing the price as a
   // number, so a non-USD symbol (£, A$, €...) would make saving fail outright.
@@ -140,7 +142,7 @@ export async function POST(request: Request) {
     await saveProduct({
       canonicalUrl: canonical,
       name: name!,
-      brand: (extracted.brand ?? retailer).slice(0, 60),
+      brand: (brand ?? retailer).slice(0, 60),
       category: guessCategory(name!),
       price: priceForStore,
       image: image!,
