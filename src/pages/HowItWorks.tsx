@@ -5,27 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, UserCheck, Sparkles } from "lucide-react";
 import { AccountPromptModal } from "@/components/AccountPromptModal";
-import { PoreCloggingChecker } from "@/components/PoreCloggingChecker";
-import {
-  poreCloggingIngredients,
-  poreCloggingCombinations,
-  cautionIngredients,
-} from "@/data/poreCloggingIngredients";
-
-// Group the full pore-clogging list by first letter for display
-const comedogenicIngredients = [
-  ...poreCloggingIngredients.map((i) => i.name),
-  ...poreCloggingCombinations.map((c) => c.name),
-]
-  .sort((a, b) => a.localeCompare(b))
-  .reduce<{ letter: string; items: string[] }[]>((groups, name) => {
-    const letter = name[0].toUpperCase();
-    const group = groups.find((g) => g.letter === letter);
-    if (group) group.items.push(name);
-    else groups.push({ letter, items: [name] });
-    return groups;
-  }, []);
-const comedogenicCount = poreCloggingIngredients.length + poreCloggingCombinations.length;
 
 const HowItWorks = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -113,9 +92,6 @@ const HowItWorks = () => {
             </CardContent>
           </Card>
 
-          {/* Pore-Clogging Ingredients Checker */}
-          <PoreCloggingChecker />
-
           {/* Continue CTA Section */}
           <Card className="bg-gradient-to-br from-sage/30 via-cream to-warm-beige/30 border-primary/30 shadow-lg">
             <CardContent className="py-12 text-center space-y-4">
@@ -126,35 +102,6 @@ const HowItWorks = () => {
               <Button onClick={() => setIsModalOpen(true)} size="lg" className="mt-6 shadow-md">
                 Continue Exploring
               </Button>
-            </CardContent>
-          </Card>
-          
-          {/* Comedogenic Ingredients */}
-          <Card className="border-sand/50 bg-gradient-to-br from-sand/20 to-background">
-            <CardHeader>
-              <CardTitle className="text-2xl">Comedogenic Ingredients We Screen For</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                The {comedogenicCount} pore-clogging ingredients we screen for (updated 1/1/23)
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="columns-2 md:columns-4 gap-6">
-                {comedogenicIngredients.map((section) => (
-                  <div key={section.letter} className="break-inside-avoid mb-6">
-                    <h3 className="font-bold text-lg mb-2 text-primary">{section.letter}</h3>
-                    <ul className="space-y-1 text-sm text-muted-foreground">
-                      {section.items.map((item) => (
-                        <li key={item}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mt-2 italic">
-                Also use with caution: {cautionIngredients.map((i) => i.name).join(", ")}.
-                These are mildly comedogenic and can be a problem when formulated with other pore-clogging
-                ingredients.
-              </p>
             </CardContent>
           </Card>
         </div>

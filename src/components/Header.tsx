@@ -52,12 +52,15 @@ export const Header = ({ onSearch }: HeaderProps = {}) => {
         </div>
         
         {/* Navigation */}
-        <nav className="flex justify-center gap-8 pb-4 text-sm">
+        <nav className="flex justify-center gap-8 pb-4 text-base font-bold">
           <Link to="/" className="text-foreground hover:text-primary transition-colors">
             All Products
           </Link>
           <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">
             How this works?
+          </Link>
+          <Link to="/checker" className="text-foreground hover:text-primary transition-colors">
+            Checker
           </Link>
           <Link to="/blogs" className="text-foreground hover:text-primary transition-colors">
             Blogs

@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import HowItWorks from "./pages/HowItWorks";
+import Checker from "./pages/Checker";
 import ProductDetail from "./pages/ProductDetail";
 import Blogs from "./pages/Blogs";
 import SkinProfileSetup from "./pages/SkinProfileSetup";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/login" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/checker" element={<Checker />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/skin-profile-setup" element={<SkinProfileSetup />} />
