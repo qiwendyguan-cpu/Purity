@@ -49,12 +49,18 @@ interface ProductRow {
 
 const PRODUCT_COLUMNS = "id, name, brand, category, price_text, image, image_url, external_url, retailer, created_at";
 
+// publish_product() requires a non-empty numeric price and rejects anything
+// else, so a product whose price couldn't be read is stored under this
+// sentinel rather than being blocked from publishing; toCommunityProduct()
+// maps it back to "no price" so the card just renders without one.
+const UNKNOWN_PRICE = "0.00";
+
 const toCommunityProduct = (row: ProductRow): CommunityProduct => ({
   id: row.id,
   name: row.name,
   brand: row.brand ?? "",
   category: row.category ?? "other",
-  price: row.price_text ?? undefined,
+  price: row.price_text && row.price_text !== UNKNOWN_PRICE ? row.price_text : undefined,
   image: row.image ?? row.image_url ?? "/placeholder.svg",
   externalUrl: row.external_url ?? "",
   retailer: row.retailer ?? "",
@@ -98,7 +104,7 @@ export interface PublishInput {
   name: string;
   brand?: string;
   category?: string;
-  price: string;
+  price?: string;
   image: string;
   externalUrl: string;
   retailer?: string;
@@ -113,7 +119,7 @@ export const saveProduct = async (input: PublishInput): Promise<CommunityProduct
     p_name: input.name,
     p_brand: input.brand ?? null,
     p_category: input.category ?? null,
-    p_price: input.price,
+    p_price: input.price?.trim() || UNKNOWN_PRICE,
     p_image: input.image,
     p_external_url: input.externalUrl,
     p_retailer: input.retailer ?? null,

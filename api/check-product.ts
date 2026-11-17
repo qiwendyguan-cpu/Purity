@@ -89,6 +89,17 @@ export async function POST(request: Request) {
   const price = formatPrice(extracted.price, extracted.currency);
   const productInfo = { name, brand: extracted.brand, image, price, retailer, url: page.finalUrl };
 
+  // publish_product() only strips a literal "$" before parsing the price as a
+  // number, so a non-USD symbol (£, A$, €...) would make saving fail outright.
+  // USD prices already parse fine as formatted; anything else is stored as a
+  // bare number instead, so it still publishes (just without a currency sign).
+  const priceForStore =
+    extracted.price == null
+      ? undefined
+      : (extracted.currency ?? "USD").toUpperCase() === "USD"
+        ? price
+        : extracted.price.toFixed(2);
+
   if (!extracted.ingredients) {
     return json({
       status: "no_ingredients",
@@ -117,7 +128,6 @@ export async function POST(request: Request) {
     publishNote = "Not added to the home page: the ingredient list we found looks incomplete. Please confirm it against the package.";
   else if (!storeConfigured()) publishNote = "Adding products to the home page isn't set up yet.";
   else if (!name || !image?.startsWith("https://")) publishNote = "Not added to the home page: we couldn't read the product's name or photo.";
-  else if (!price) publishNote = "Not added to the home page: we couldn't read the product's price.";
   else if (extracted.availability === "out_of_stock") publishNote = "Not added to the home page: this product is out of stock.";
   else if (!extracted.hasCartButton && extracted.availability !== "in_stock") publishNote = "Not added to the home page: we couldn't confirm this page sells the product.";
 
@@ -132,7 +142,7 @@ export async function POST(request: Request) {
       name: name!,
       brand: (extracted.brand ?? retailer).slice(0, 60),
       category: guessCategory(name!),
-      price: price!,
+      price: priceForStore,
       image: image!,
       externalUrl: page.finalUrl,
       retailer,
