@@ -216,6 +216,7 @@ const Home = () => {
     setCurrentPage(1);
   };
   const clearFilters = () => {
+    setSearchQuery("");
     setSelectedCategories([]);
     setSelectedBrands([]);
     setSelectedPriceRanges([]);
@@ -276,7 +277,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header onSearch={handleSearch} />
+      <Header searchQuery={searchQuery} onSearch={handleSearch} />
       
       {/* Hero Banner */}
       <div className="relative h-48 overflow-hidden">
@@ -307,6 +308,12 @@ const Home = () => {
               onToggleBrand={toggleBrand}
               onTogglePriceRange={togglePriceRange}
               onClearAll={clearFilters}
+              hasActiveFilters={
+                searchQuery.trim() !== "" ||
+                selectedCategories.length > 0 ||
+                selectedBrands.length > 0 ||
+                selectedPriceRanges.length > 0
+              }
             />
           </aside>
 

@@ -16,6 +16,7 @@ interface FilterSidebarProps {
   onToggleBrand: (brand: string) => void;
   onTogglePriceRange: (rangeId: string) => void;
   onClearAll: () => void;
+  hasActiveFilters?: boolean;
 }
 
 export const FilterSidebar = ({
@@ -28,9 +29,11 @@ export const FilterSidebar = ({
   onToggleBrand,
   onTogglePriceRange,
   onClearAll,
+  hasActiveFilters: hasActiveFiltersProp,
 }: FilterSidebarProps) => {
   const hasActiveFilters =
-    selectedCategories.length > 0 || selectedBrands.length > 0 || selectedPriceRanges.length > 0;
+    hasActiveFiltersProp ??
+    (selectedCategories.length > 0 || selectedBrands.length > 0 || selectedPriceRanges.length > 0);
 
   return (
     <div className="space-y-6">
