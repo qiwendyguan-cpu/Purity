@@ -2,19 +2,12 @@
 // Reads a product page, finds its ingredient list, checks it against the
 // pore-clogging list, and publishes passing in-stock products to the home page.
 
-import { createHash } from "node:crypto";
 import { checkIngredients, type CheckResult } from "../src/lib/ingredientCheck.js";
 import { extractProduct, type ExtractedProduct } from "./_lib/extractProduct.js";
 import { fetchPublicPage, FetchError } from "./_lib/safeFetch.js";
-import {
-  hasProduct,
-  productCount,
-  saveProduct,
-  storeConfigured,
-  withinRateLimit,
-  MAX_PRODUCTS,
-  type CommunityProduct,
-} from "./_lib/store.js";
+import { canonicalUrl } from "./_lib/canonicalUrl.js";
+import { guessCategory } from "./_lib/categorize.js";
+import { hasProduct, productCount, saveProduct, storeConfigured, withinRateLimit, MAX_PRODUCTS } from "./_lib/store.js";
 
 type Status = "invalid" | "blocked" | "unreachable" | "no_ingredients" | "pore_clogging" | "passed" | "rate_limited";
 
@@ -32,7 +25,7 @@ const json = (body: Response_, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
 
 // Short lists are often fragments of the real list; don't auto-publish on them
-const MIN_INGREDIENTS_TO_PUBLISH = 8;
+export const MIN_INGREDIENTS_TO_PUBLISH = 8;
 
 const CURRENCY_SYMBOLS: Record<string, string> = { USD: "$", AUD: "A$", CAD: "C$", NZD: "NZ$", GBP: "£", EUR: "€", JPY: "¥" };
 
@@ -41,32 +34,6 @@ const formatPrice = (price?: number, currency?: string) => {
   const code = (currency ?? "USD").toUpperCase();
   const amount = price.toFixed(code === "JPY" ? 0 : 2);
   return CURRENCY_SYMBOLS[code] ? `${CURRENCY_SYMBOLS[code]}${amount}` : `${code} ${amount}`;
-};
-
-const CATEGORY_KEYWORDS: [RegExp, string][] = [
-  [/\b(sunscreen|sun ?cream|spf|sunblock|sun protect)/i, "sunscreen"],
-  [/\b(body wash|shower gel|shower cream)/i, "body wash"],
-  [/\bdry shampoo/i, "dry shampoo"],
-  [/\bshampoo/i, "shampoo"],
-  [/\bconditioner/i, "conditioner"],
-  [/\b(cleanser|face wash|cleansing)/i, "cleanser"],
-  [/\b(toner|essence)/i, "toner"],
-  [/\bserum/i, "serum"],
-  [/\b(moisturi[sz]er|moisturi[sz]ing cream|face cream|lotion|gel cream)/i, "moisturizer"],
-  [/\b(hair ?spray)/i, "hair spray"],
-  [/\b(foundation|concealer|primer|powder|blush|bronzer|mascara|lipstick|setting spray)/i, "makeup"],
-  [/\bmask\b/i, "mask"],
-];
-const guessCategory = (name: string) => CATEGORY_KEYWORDS.find(([re]) => re.test(name))?.[1] ?? "other";
-
-// Same product page → same id, ignoring tracking parameters
-const canonicalUrl = (url: string) => {
-  const u = new URL(url);
-  for (const key of [...u.searchParams.keys()]) {
-    if (/^(utm_|ref|tag|gclid|fbclid|srsltid|_pos|_sid|_ss|cid|clickid)/i.test(key)) u.searchParams.delete(key);
-  }
-  u.hash = "";
-  return `${u.protocol}//${u.hostname.replace(/^www\./, "")}${u.pathname.replace(/\/$/, "")}${u.search}`.toLowerCase();
 };
 
 const retailerName = (extracted: ExtractedProduct, url: string) => {
@@ -143,35 +110,36 @@ export async function POST(request: Request) {
 
   // Passed: publish to the home page if it's a buyable product with the details a card needs
   const base = { status: "passed" as const, message: "No pore-clogging ingredients found.", product: productInfo, ingredients: extracted.ingredients, result };
-  const id = `c-${createHash("sha1").update(canonicalUrl(page.finalUrl)).digest("hex").slice(0, 12)}`;
+  const canonical = canonicalUrl(page.finalUrl);
 
   let publishNote: string | undefined;
   if (result.checkedCount < MIN_INGREDIENTS_TO_PUBLISH)
     publishNote = "Not added to the home page: the ingredient list we found looks incomplete. Please confirm it against the package.";
   else if (!storeConfigured()) publishNote = "Adding products to the home page isn't set up yet.";
   else if (!name || !image?.startsWith("https://")) publishNote = "Not added to the home page: we couldn't read the product's name or photo.";
+  else if (!price) publishNote = "Not added to the home page: we couldn't read the product's price.";
   else if (extracted.availability === "out_of_stock") publishNote = "Not added to the home page: this product is out of stock.";
   else if (!extracted.hasCartButton && extracted.availability !== "in_stock") publishNote = "Not added to the home page: we couldn't confirm this page sells the product.";
 
   if (publishNote) return json({ ...base, published: false, publishNote });
 
   try {
-    if (await hasProduct(id)) return json({ ...base, published: true, publishNote: "This product is already on Purity's home page." });
+    if (await hasProduct(canonical)) return json({ ...base, published: true, publishNote: "This product is already on Purity's home page." });
     if ((await productCount()) >= MAX_PRODUCTS) return json({ ...base, published: false, publishNote: "Not added: the community product list is full." });
 
-    const product: CommunityProduct = {
-      id,
+    await saveProduct({
+      canonicalUrl: canonical,
       name: name!,
       brand: (extracted.brand ?? retailer).slice(0, 60),
       category: guessCategory(name!),
-      price,
+      price: price!,
       image: image!,
       externalUrl: page.finalUrl,
       retailer,
-      linkToShop: true,
-      createdAt: new Date().toISOString(),
-    };
-    await saveProduct(product);
+      ingredients: extracted.ingredients,
+      checkResult: result,
+      source: "link",
+    });
     return json({ ...base, published: true, publishNote: "Added to Purity's home page." });
   } catch {
     return json({ ...base, published: false, publishNote: "Not added: saving the product failed. Please try again." });

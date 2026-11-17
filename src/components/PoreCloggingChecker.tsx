@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, AlertTriangle, CheckCircle2, Info, Link2, Loader2, Store } from "lucide-react";
+import { Search, AlertTriangle, CheckCircle2, Info, Link2, Loader2, Store, Plus } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
 import { checkIngredients, type CheckResult } from "@/lib/ingredientCheck";
 
@@ -129,6 +129,11 @@ const LinkResult = ({ data }: { data: LinkCheckResponse }) => {
   );
 };
 
+interface ManualPublishNote {
+  published: boolean;
+  note: string;
+}
+
 export const PoreCloggingChecker = () => {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<CheckResult | null>(null);
@@ -136,9 +141,17 @@ export const PoreCloggingChecker = () => {
   const [linkLoading, setLinkLoading] = useState(false);
   const [linkResult, setLinkResult] = useState<LinkCheckResponse | null>(null);
 
+  const [manualName, setManualName] = useState("");
+  const [manualBrand, setManualBrand] = useState("");
+  const [manualPrice, setManualPrice] = useState("");
+  const [manualUrl, setManualUrl] = useState("");
+  const [manualPublishing, setManualPublishing] = useState(false);
+  const [manualPublishNote, setManualPublishNote] = useState<ManualPublishNote | null>(null);
+
   const handleCheck = () => {
     setLinkResult(null);
     setResult(checkIngredients(input));
+    setManualPublishNote(null);
   };
 
   const handleClear = () => {
@@ -146,6 +159,32 @@ export const PoreCloggingChecker = () => {
     setResult(null);
     setLink("");
     setLinkResult(null);
+    setManualName("");
+    setManualBrand("");
+    setManualPrice("");
+    setManualUrl("");
+    setManualPublishNote(null);
+  };
+
+  const handlePublishManual = async () => {
+    setManualPublishing(true);
+    setManualPublishNote(null);
+    try {
+      const res = await fetch("/api/publish-manual-product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: manualName, brand: manualBrand, price: manualPrice, externalUrl: manualUrl, ingredients: input }),
+      });
+      const data = await res.json();
+      setManualPublishNote({
+        published: Boolean(data.published),
+        note: data.publishNote ?? data.message ?? "Something went wrong publishing this product.",
+      });
+    } catch {
+      setManualPublishNote({ published: false, note: "Something went wrong publishing this product. Please try again." });
+    } finally {
+      setManualPublishing(false);
+    }
   };
 
   const handleCheckLink = async () => {
@@ -261,6 +300,70 @@ export const PoreCloggingChecker = () => {
               <LinkResult data={linkResult} />
             ) : (
               result && <IngredientResult result={result} />
+            )}
+
+            {!linkLoading && !linkResult && result && result.poreClogging.length === 0 && (
+              <div className="rounded-xl border bg-background p-4 space-y-3">
+                {manualPublishNote ? (
+                  <p
+                    className={`text-sm flex items-start gap-2 ${
+                      manualPublishNote.published ? "text-primary font-medium" : "text-muted-foreground"
+                    }`}
+                  >
+                    {manualPublishNote.published ? (
+                      <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
+                    ) : (
+                      <Info className="h-4 w-4 mt-0.5 shrink-0" />
+                    )}
+                    <span>
+                      {manualPublishNote.note}{" "}
+                      {manualPublishNote.published && (
+                        <Link to="/" className="underline">
+                          See it on the home page
+                        </Link>
+                      )}
+                    </span>
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium">Add this product to Purity</p>
+                    <p className="text-xs text-muted-foreground">
+                      Tell us what this is and where to buy it, and we'll add it to the home page.
+                    </p>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <Input
+                        placeholder="Product name"
+                        value={manualName}
+                        onChange={(e) => setManualName(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Brand (optional)"
+                        value={manualBrand}
+                        onChange={(e) => setManualBrand(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Price e.g. $12.99"
+                        value={manualPrice}
+                        onChange={(e) => setManualPrice(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Shop link (https://...)"
+                        value={manualUrl}
+                        onChange={(e) => setManualUrl(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      onClick={handlePublishManual}
+                      disabled={!manualName.trim() || !manualPrice.trim() || !manualUrl.trim() || manualPublishing}
+                      size="sm"
+                      className="rounded-full gap-2"
+                    >
+                      {manualPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                      Add to Purity
+                    </Button>
+                  </>
+                )}
+              </div>
             )}
 
             {!linkLoading && (
