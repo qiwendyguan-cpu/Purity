@@ -21,18 +21,6 @@ const sunscreenBadge = "For prolonged sun";
 
 const products = [
   {
-    id: "13",
-    name: "Cetaphil Sun Ultra Light Lotion SPF50+",
-    brand: "Cetaphil",
-    category: "sunscreen",
-    price: "A$27.99",
-    image: "/products/sunscreen-cetaphil-ultralight.jpg",
-    badge: sunscreenBadge,
-    linkToShop: true,
-    externalUrl: "https://terrywhitechemmart.com.au/shop/product/cetaphil-sun-ultra-light-lotion-spf50-100ml",
-    retailer: "TerryWhite (AU)"
-  },
-  {
     id: "14",
     name: "Neutrogena Sheer Zinc Face Dry-Touch Sunscreen SPF 50",
     brand: "Neutrogena",
@@ -44,65 +32,7 @@ const products = [
     externalUrl: "https://www.amazon.com/dp/B01MDOA0V4",
     retailer: "Amazon"
   },
-  {
-    id: "16",
-    name: "Bariésun Matifying Fluid SPF50+",
-    brand: "Uriage",
-    category: "sunscreen",
-    price: "£23.50",
-    image: "/products/sunscreen-uriage-bariesun-mat.png",
-    badge: sunscreenBadge,
-    linkToShop: true,
-    externalUrl: "https://www.superdrug.com/skin/sun-care/expert-sensitive-suncare/uriage-bariesun-matifying-fluid-spf50-50ml/p/mp-00123030",
-    retailer: "Superdrug (UK)"
-  },
-  {
-    id: "17",
-    name: "Fotoprotector Fusion Gel Sport SPF 50",
-    brand: "ISDIN",
-    category: "sunscreen",
-    price: "€24.21",
-    image: "/products/sunscreen-isdin-fusion-gel-sport.jpg",
-    badge: sunscreenBadge,
-    linkToShop: true,
-    externalUrl: "https://www.medikamente-per-klick.de/isdin-fotoprotector-fusion-gel-sport-spf-50-100ml-16951364",
-    retailer: "Medikamente per Klick (DE)"
-  },
-  {
-    id: "18",
-    name: "Nivea Sun Protect & Refresh Cooling Sun Mist SPF50",
-    brand: "Nivea",
-    category: "sunscreen",
-    price: "£9.20",
-    image: "/products/sunscreen-nivea-protect-refresh.png",
-    badge: sunscreenBadge,
-    linkToShop: true,
-    externalUrl: "https://groceries.morrisons.com/products/nivea-sun-protect-dry-touch-sun-cream-mist-spf-50-200ml/112324149",
-    retailer: "Morrisons (UK)"
-  },
   // Acne-safe body washes. Links and prices checked 2026-10-06.
-  {
-    id: "19",
-    name: "Thankyou Botanical Body Wash Mint & Spring Flowers 1L",
-    brand: "Thankyou",
-    category: "body wash",
-    price: "A$8.95",
-    image: "/products/bodywash-thankyou-mint.jpg",
-    linkToShop: true,
-    externalUrl: "https://www.woolworths.com.au/shop/productdetails/307002",
-    retailer: "Woolworths (AU)"
-  },
-  {
-    id: "20",
-    name: "Thankyou Botanical Body Wash Geranium, Rose & Wood 1L",
-    brand: "Thankyou",
-    category: "body wash",
-    price: "A$8.95",
-    image: "/products/bodywash-thankyou-geranium.jpg",
-    linkToShop: true,
-    externalUrl: "https://www.woolworths.com.au/shop/productdetails/306679",
-    retailer: "Woolworths (AU)"
-  },
   {
     id: "21",
     name: "Trader Joe's Tea Tree Tingle Body Wash (2-pack)",
@@ -113,17 +43,6 @@ const products = [
     linkToShop: true,
     externalUrl: "https://www.amazon.com/dp/B0HFSNQZW8",
     retailer: "Amazon"
-  },
-  {
-    id: "22",
-    name: "Palmolive Men Active Body Wash with Sea Minerals 1L",
-    brand: "Palmolive",
-    category: "body wash",
-    price: "A$10.99",
-    image: "/products/bodywash-palmolive-men-active.jpg",
-    linkToShop: true,
-    externalUrl: "https://www.chemistwarehouse.com.au/buy/75852/palmolive-men-body-wash-active-with-sea-minerals-shower-gel-1l",
-    retailer: "Chemist Warehouse (AU)"
   },
   {
     id: "1",
